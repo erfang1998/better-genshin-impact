@@ -203,8 +203,14 @@ public partial class AutoSkipTrigger : ITaskTrigger
         if (isPlaying)
         {
             _prevPlayingTime = DateTime.Now;
+            // 开启了快速跳过对话文本的选项
             if (TaskContext.Instance().Config.AutoSkipConfig.QuicklySkipConversationsEnabled)
             {
+                if (_config.BeforeClickConfirmDelay > 0)
+                {
+                    // 设置了延迟时间，则在该延迟时间后再触发点击动作 TODO: 应当增加一个最大时间，超过该时间后直接点击，短文本遇到有演出时，是无需等待延迟的，文本已经阅读完了
+                    Thread.Sleep(_config.BeforeClickConfirmDelay);
+                }
                 if (IsUseInteractionKey)
                 {
                     _postMessageSimulator? .SimulateActionBackground(GIActions.PickUpOrInteract); // 注意这里不是交互键 NOTE By Ayu0K: 这里确实是交互键
